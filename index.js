@@ -1,12 +1,17 @@
-const express = require("express")
-const mongoose = require('mongoose')
-const cors = require("cors")
+import express from 'express';
+import mongoose from 'mongoose';
+import cors from 'cors';
+import dotenv from 'dotenv'
+dotenv.config()
+import cookieParser from 'cookie-parser';
+import router from './Routes/routes.js'
+
+const PORT = process.env.PORT || 5000
+const MONGO_URL = process.env.MONGO_URL
 const app = express();
-require("dotenv").config()
-const { MONGO_URL, PORT } = process.env
 
 mongoose
-    .connect(MONGO_URL, { 
+    .connect(MONGO_URL, {
         useNewUrlParser: true,
         useUnifiedTopology: true,
     })
@@ -19,10 +24,11 @@ app.listen(PORT, () => {
 
 app.use(
     cors({
-        origin:["http://localhost:4000"],
+        origin: ["http://localhost:"+PORT],
         methods: ["GET", "POST", "PUT", "DELETE"],
         credentials: true,
     })
 )
-
+app.use(cookieParser());
 app.use(express.json());
+app.use("/", router);
