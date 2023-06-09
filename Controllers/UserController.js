@@ -1,5 +1,5 @@
 import UserModel from "../Models/UserModel.js"
-import { createSecretToken } from  "../util/SecretToken.js"
+import { createSecretToken } from "../util/SecretToken.js"
 import bcrypt from "bcrypt"
 
 export const Signup = async (req, res, next) => {
@@ -25,3 +25,25 @@ export const Signup = async (req, res, next) => {
     }
 };
 
+export const Login = async (req, res, next) => {
+    try {
+        const { email, password } = req.body
+        if(!email||!password){
+            return res.json({message:"champs obligatoires"})
+        }
+        const user =await UserModel.findOne({email})
+        const auth=await bcrypt.compare(password,user.password)
+        if (!user||!auth){
+            return res.json({message:"utlisateur ou mot passe incorrect"})
+        }
+        const token = createSecretToken(user._id)
+        res.cookie("token",token,{
+            withCredentials:true,
+            httpOnly:false
+        })
+        res.status(201).json({message:"Connexion réussie",succes:true})
+        next()
+    } catch (err) {
+        console.error(err)
+    }
+}
