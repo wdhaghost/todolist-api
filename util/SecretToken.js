@@ -4,7 +4,6 @@ import jwt from "jsonwebtoken"
 const Token = process.env.TOKEN_KEY
 
 export const createSecretToken = (id) => {
-  console.log(Token)
   return jwt.sign({ id }, Token, {
     expiresIn: 3 * 24 * 60 * 60,
   });

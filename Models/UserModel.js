@@ -1,4 +1,4 @@
-import mongoose from 'mongoose'
+import mongoose, { Model } from 'mongoose'
 import bcrypt from 'bcrypt'
 
 const UserSchema = new mongoose.Schema({
@@ -37,5 +37,6 @@ UserSchema.pre("save", async function () {
     this.password = await bcrypt.hash(this.password, 12)
 })
 
-const UserModel = mongoose.model("User", UserSchema)
+const UserModel = mongoose.model("User",UserSchema)
+
 export default UserModel
